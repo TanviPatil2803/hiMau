@@ -1,0 +1,330 @@
+********************************** Randomized QuickSort *************************************************
+/******************************************************************************
+*******************************************************************************/
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int partition(vector<int>&arr, int low, int high){
+    int pivot=arr[high];
+    int j=low;
+    for(int i=low;i<high;i++){
+        if(arr[i]<=pivot){
+            swap(arr[j],arr[i]);
+            j++;
+        }
+    }
+    swap(arr[j],arr[high]);
+    return j;
+}
+
+void QuickSort(vector<int>&arr,int low, int high){
+    if(low>=high)return;
+    int pi=partition(arr,low,high);
+    QuickSort(arr,low,pi-1);
+    QuickSort(arr,pi+1,high);
+}
+
+int partition_Randomized(vector<int>&arr, int low, int high){
+    int randPivot=low + rand()%(high-low+1);
+    swap(arr[high],arr[randPivot]);
+    int pivot=arr[high];
+    int j=low;
+    for(int i=low;i<high;i++){
+        if(arr[i]<=pivot){
+            swap(arr[j],arr[i]);
+            j++;
+        }
+    }
+    swap(arr[j],arr[high]);
+    return j;
+}
+
+void QuickSort_Randomized(vector<int>&arr,int low, int high){
+    if(low>=high)return;
+    int pi=partition_Randomized(arr,low,high);
+    QuickSort_Randomized(arr,low,pi-1);
+    QuickSort_Randomized(arr,pi+1,high);
+}
+
+
+
+void analyzeQuickSort(vector<int>arr){
+    
+    auto measure_time=[](void (*sort_func)(vector<int>&, int, int),vector<int>arr){
+        auto start=chrono::high_resolution_clock::now();
+        sort_func(arr,0,arr.size()-1);
+        auto end=chrono::high_resolution_clock::now();
+        chrono::duration<double> dur=end-start;
+        return dur.count();
+    };
+    
+   
+    cout<<"time required for randomized algo:  "<<measure_time(QuickSort_Randomized,arr);
+     cout<<"time required for deterministic Quicksort Algorithm:"<<measure_time(QuickSort,arr)<<endl;
+    
+}
+
+int main(){
+    
+    int n;
+    cout<<"enetr the size:"<<endl;
+    cin>>n;
+    vector<int>v;
+    for(int i=0;i<n;i++){
+        int k;
+        cout<<"enter the element:"<<endl;
+        cin>>k;
+        v.push_back(k);
+        
+    }
+    analyze(v);
+    
+}
+TC=O(nlogn)
+For example, if we try to sort an already sorted array 
+
+[1,2,3,4,5]:
+
+Deterministic Quick Sort (with last-element pivot) would always choose the largest element, producing very unbalanced partitions.
+Randomized Quick Sort, by choosing a pivot randomly, is unlikely to consistently pick poor pivots,
+ so it will typically partition more evenly, resulting in faster sorting.
+In summary, randomized Quick Sort improves Quick Sort's efficiency on various input patterns, 
+especially for inputs that would degrade deterministic Quick Sort. This is why randomized Quick Sort 
+is generally preferred, as it makes the algorithm’s performance more consistent.
+
+
+
+********************************************** N_QUEENS ****************************************************************
+#include<bits/stdc++.h>
+using namespace std;
+bool isSafe(vector<vector<int>>&board,int row, int col){
+    int n=board.size();
+    // back
+    for(int i=0;i<col;i++){
+        if(board[row][i]==1)return false;
+    }
+    for(int i=row,j=col; i>=0 && j>=0 ;i--,j--){
+        if(board[i][j]==1)return false;
+    }
+    for(int i=row,j=col;i<n & j>=0;j--,i++){
+        if(board[i][j]==1)return false;
+    }
+    return true;
+}
+
+bool placeQueens(vector<vector<int>>&mat,int col){
+    int n=mat.size();
+    if(col>=n)return true;
+    for(int i=0;i<n;i++){
+        if(isSafe(mat,i,col)){
+            mat[i][col]=1;
+            if(placeQueens(mat,col+1))return true;
+            mat[i][col]=0;
+        }
+    }
+    return false;
+}
+
+int main(){
+    int n;
+    cout<<"enetr the size of board"<<endl;
+    cin>>n;
+    vector<vector<int>>board(n,vector<int>(n,0));
+    placeQueens(board,0);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            cout<<board[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    
+}
+
+
+Time Complexity: O(N!)
+Auxiliary Space: O(N2)
+
+
+*************************************** FIBONACCI *************************************************************
+#include<bits/stdc++.h>
+using namespace std;
+
+int fibonacci_Iterative(int n){
+    int a=1;
+    int b=2;
+    for(int i=2;i<n;i++){
+        int k=a+b;
+        a=b;
+        b=k;
+        
+    }
+    return b;
+}
+
+int fib_rec(int n){
+    if(n<=2)return n;
+    return fib_rec(n-1)+fib_rec(n-2);
+    
+    
+}
+
+
+int main(){
+    int n;
+    cout<<"enetr the number"<<endl;
+    cin>>n;
+    cout<<"Iterative: "<<fibonacci_Iterative(n)<<"  recursive:  "<<fib_rec(n)<<endl;
+}
+TC= rec=O(2^n)  iter=O(n)
+SC= rec=O(n)   iter=O(1)
+
+
+********************************** Huffman Coding*******************************************************************
+
+#include<bits/stdc++.h>
+using namespace std;
+
+
+struct Node{
+  int freq;
+  char node;
+  Node* left;
+  Node* right;
+  Node(int frq, char name,Node* lft, Node* rght){
+      freq=frq;
+      node=name;
+      left=lft;
+      right=rght;
+  }
+};
+
+void PrintCodes(Node* root,string s){
+    if(root==NULL)return;
+    if(root->node!='$')cout<<root->node<<"   huffman code:"<<s<<endl;
+    PrintCodes(root->left,s+'0');
+    PrintCodes(root->right,s+'1');
+}
+struct comparison{
+    bool operator()(Node* r1,Node* r2){
+          return r1->freq>=r2->freq;
+   }
+};
+
+
+void  huffmanTreeGenerator(map<char,int>&mp){
+    priority_queue<Node*,vector<Node*>,comparison>pq;
+    
+    for(auto it:mp){
+        pq.push(new Node(it.second,it.first,NULL,NULL));
+    }
+    while(pq.size()!=1){
+        Node* left=pq.top();
+        int fr1=pq.top()->freq;
+        pq.pop();
+        Node* right=pq.top();
+        int fr2=pq.top()->freq;
+        pq.pop();
+        pq.push(new Node(fr1+fr2,'$',left,right));
+    }
+    PrintCodes(pq.top(),""); 
+}
+int main(){
+    
+    int n;
+    cout<<"enter ttal numbr of characters:"<<endl;
+    cin>>n;
+    map<char,int>mp;
+    for(int i=0;i<n;i++){
+        cout<<"enter the character and its frequency"<<endl;
+        char ch;
+        int k;
+        cin>>ch>>k;
+        mp[ch]=k;
+    }
+    huffmanTreeGenerator(mp);
+}
+TC=O(nlog(n))
+
+********************************************* fractional Knapsack ********************************* 
+#include<bits/stdc++.h>
+using namespace std;
+
+static bool comp(pair<int,int>p1,pair<int,int>p2){
+    double r1= (double)p1.first/(double)p1.second;
+    double r2=(double)p2.first/(double)p2.second;
+    return r1>r2;
+}
+int main(){
+    int n;
+    cout<<"enetr the no of items "<<endl;
+    cin>>n;;
+    vector<pair<int,int>>items;
+    for(int i=0;i<n;i++){
+        cout<<"enter the profit and weight of item"<<endl;
+        int p,w;
+        cin>>p>>w;
+        items.push_back({p,w});
+    }
+    int w;
+    cout<<"enetr the weight of knapsack"<<endl;
+    cin>>w;
+    sort(items.begin(),items.end(),comp);
+    int ans=0;
+    for(int i=0;i<n;i++){
+        if(items[i].second<=w){
+            ans+=items[i].first;
+            w-=items[i].second;
+        }
+        else{
+            ans+=((double)w/(double)items[i].second)*items[i].first;
+            break;
+        }
+    }
+    cout<<ans<<endl;
+}
+
+Input: arr[] = {{60, 10}, {100, 20}, {120, 30}}, W = 50
+Output: 240 
+
+TC=O(N)
+
+************************************************* 0/1 Knapsack ********************************************
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int n;
+    cout<<"enter the no of items"<<endl;
+    cin>>n;
+    vector<pair<int,int>>items;
+    for(int i=0;i<n;i++){
+        int p,w;
+        cout<<"enetr the profit and weight"<<endl;
+        cin>>p>>w;
+        items.push_back({p,w});
+    }
+    int w;
+    cout<<"enter the weight of knapsack"<<endl;
+    cin>>w;
+    // sort(items.begin(),items.end());
+    vector<int>dp(w+1,0);
+    for(int i=items[0].second;i<=w;i++){
+        dp[i]=items[0].first;
+    }
+    for(int i=1;i<n;i++){
+        for(int j=w;j>=0;j--){
+            int nottake=dp[j];
+            int take=INT_MIN;
+            if(items[i].second<=j){
+                take=items[i].first+dp[j-items[i].second];
+            }
+            dp[j]=max(nottake,take);
+        }
+    }
+    cout<<dp[w]<<endl;
+}
+Time Complexity: O(N * W). As redundant calculations of states are avoided
+Auxiliary Space: O(W) As we are using a 1-D array instead of a 2-D array
+
