@@ -1,0 +1,90 @@
+https://youtu.be/AXVE2n4StHo?si=4h4fZ03J4cJRi7s3
+
+Assignment 1&2:
+     download metamask chrome extension and create your own account.
+     It will give 12 words that we need while logging into the account, keep that words safe.
+     after that go to the faucet link website for mining and collect tokens.
+     it will ask you to get gitcons on passport,follow the given link and connect the wallet with passport account and verify accounts to get coins.
+     after getting this come back to faucet website and click on start mining and you will gain rewards as points and it will be stored in your metamask wallet.
+     now you can transfer points or eth from one account to other , it will charge some gas/fees for mining purpose.
+
+Assignment 3:  on Remix  IDE
+     // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.17; // specify version of solidity compiler
+
+contract Bank{
+    uint256 balance=0;
+    address public accOwner;
+    constructor(){  //constructor function is called when program is deployed
+         accOwner=msg.sender;
+    }
+
+
+    //deposite
+    function Deposite() public payable {  // payable functions in solidity let smart contract accept ether 
+        require(accOwner==msg.sender,"You are not Accpount owner");
+        require(msg.value>0,"Amount should be greater than 0!");
+        balance+=msg.value;
+
+    }
+     function Withdraw() public payable{
+        require(accOwner==msg.sender,"You are not Accpount owner");
+        require(msg.value>0,"Amount should be greater than 0!");
+        balance-=msg.value;
+    }
+
+    function DisplayBal() public view returns(uint256) {
+         require(accOwner==msg.sender,"You are not Accpount owner");
+         return balance;
+    }
+}
+
+
+ compile->deploy->user inetrface will be created
+
+
+
+Assignment 4:
+      Ethereum is blockchain technology which allow users to develope and deploy smart contracts
+
+      //SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.17;
+
+contract StudentData{
+    struct Student{
+        string name;
+        uint rollno;
+    }
+
+    Student[] public studentArr;
+
+    function addStudent(string memory name,uint rollno) public{
+        for(uint i=0;i<studentArr.length;i++){
+            if(studentArr[i].rollno==rollno){
+                revert("Student with roll no already exists!");
+            }
+        }
+        studentArr.push(Student(name,rollno));
+    }
+
+    function displayAllStudents() public view returns(Student[] memory){
+        return studentArr;
+    }
+
+    function getStudentByIndex(uint index) public view returns(Student memory){
+        require(index<studentArr.length || index > studentArr.length,"Index out of bound");
+        return studentArr[index];
+    }
+
+    function getLengthOfStudents() public view returns(uint){
+        return studentArr.length;
+    }
+
+
+}
+
+
+Assignment 5:
+
+ 
+
